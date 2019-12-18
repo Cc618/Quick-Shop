@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'item.dart';
 import 'list.dart';
+import 'dialogs.dart';
 
 class ListCategory extends StatefulWidget {
   // Model which handles all the data
@@ -65,51 +66,12 @@ class _CategoryView extends State<ListCategory> {
   }
 
   // Shows the dialog to add an item
-  Future<void> addItemDialog() async {
-    String name = '';
-
-    // Show dialog
-    await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('New Item'),
-            content: TextField(
-              autofocus: true,
-              decoration: InputDecoration.collapsed(hintText: 'Name'),
-              onChanged: (String s) => name = s,
-            ),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Cancel'),
-                onPressed: () {
-                  name = '';
-                  Navigator.of(context).pop();
-                },
-              ),
-              FlatButton(
-                child: Text('Ok'),
-                onPressed: () {
-                  // Error : No name
-                  if (name.isEmpty)
-                    Scaffold.of(ListPage.scaffoldContext).showSnackBar(SnackBar(
-                      content: Text('Please enter a name'),
-                      duration: Duration(seconds: 1),
-                    ));
-                  else
-                    Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
-
-    // If input
-    if (name.isNotEmpty)
-      setState(() {
+  void addItemDialog()
+    => lineDialog(
+      'New Item', 'Item Title', 'Please enter a title',
+      context, ListPage.scaffoldContext, (input) => setState(() {
         widget.m.collapsed = false;
-        widget.m.items.add(ListItem(ListItemModel(title: name, checked: false)));
-      });
-  }
+        widget.m.items.add(ListItem(ListItemModel(title: input, checked: false)));
+      }));
 
 }
