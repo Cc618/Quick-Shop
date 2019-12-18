@@ -4,23 +4,23 @@ import 'package:flutter/material.dart';
 import 'item.dart';
 
 class ListCategory extends StatefulWidget {
-  ListCategory(this.m, {Key key}) : super(key: key);
-
   // Model which handles all the data
   final ListCategoryModel m;
+
+  ListCategory(this.m, {Key key}) : super(key: key);
 
   @override
   _CategoryView createState() => _CategoryView();
 }
 
 class ListCategoryModel {
+  String title;
+  List<ListItem> items;
+
   ListCategoryModel({
     @required this.title,
     @required this.items
   });
-
-  String title;
-  List<ListItem> items;
 }
 
 class _CategoryView extends State<ListCategory> {

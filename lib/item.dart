@@ -3,23 +3,23 @@
 import 'package:flutter/material.dart';
 
 class ListItem extends StatefulWidget {
-  ListItem(this.m, {Key key}) : super(key: key);
-
   // Model which handles all the data
   final ListItemModel m;
+
+  ListItem(this.m, {Key key}) : super(key: key);
 
   @override
   _ItemView createState() => _ItemView();
 }
 
 class ListItemModel {
+  String title;
+  bool checked;
+  
   ListItemModel({
     @required this.title,
     @required this.checked
   });
-
-  String title;
-  bool checked;
 }
 
 class _ItemView extends State<ListItem> {
