@@ -52,7 +52,7 @@ class _MenuView extends State<ListMenu> {
   Future<void> loadList(String title) async {
     var listModel = await readListFile(title);
 
-    Navigator.push(context, MaterialPageRoute(
+    await Navigator.push(context, MaterialPageRoute(
       builder: (context) => ListPage(listModel)
     ));
   }

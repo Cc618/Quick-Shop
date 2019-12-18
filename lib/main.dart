@@ -4,10 +4,6 @@ import 'list.dart';
 import 'files.dart';
 import 'sample_data.dart';
 
-// TODO
-// String currentListName = 'sample';
-// ListPage(ListModel.fromJson('My First List', sampleData)),
-
 void main() => runApp(QuickShop());
 
 // App entry

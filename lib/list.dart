@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:quick_shop/files.dart';
 import 'category.dart';
 import 'dialogs.dart';
 
@@ -54,10 +55,28 @@ class ListModel {
   }
 }
 
-class _ListView extends State<ListPage> {
+class _ListView extends State<ListPage> with WidgetsBindingObserver {
+  @override
+  void dispose() {
+    save();
+    
+    WidgetsBinding.instance.removeObserver(this);
+
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive)
+      save();
+  }
+
   @protected
   void initState() {
     super.initState();
+
+    // To have app state events
+    WidgetsBinding.instance.addObserver(this);
 
     // Set onMenu function for each category
     for (var cat in widget.m.categories)
@@ -82,9 +101,7 @@ class _ListView extends State<ListPage> {
         }
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async => print('TEST ZONE'),
-        // TODO
-        // onPressed: newCategoryDialog,
+        onPressed: newCategoryDialog,
         tooltip: 'Add Category',
         child: Icon(Icons.add),
       ),
@@ -111,6 +128,10 @@ class _ListView extends State<ListPage> {
     => menuDialog(category.m.title, context, [
       MenuItem('Remove', () => setState(() => widget.m.categories.remove(category)), true)
     ]);
+
+  // Save or update the file on the device
+  void save()
+    => writeListFile(widget.m);
 }
 
 // Describes a file linked to a list
