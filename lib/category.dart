@@ -16,10 +16,12 @@ class ListCategory extends StatefulWidget {
 class ListCategoryModel {
   String title;
   List<ListItem> items;
+  bool collapsed;
 
   ListCategoryModel({
     @required this.title,
-    @required this.items
+    @required this.items,
+    @required this.collapsed,
   });
 }
 
@@ -29,16 +31,34 @@ class _CategoryView extends State<ListCategory> {
     // Generate the children
     List<Widget> children = <Widget>[
       // Title
-      Text(widget.m.title),
+      ListTile(
+        title: Text(widget.m.title),
+        onTap: () =>
+            setState(() => widget.m.collapsed = !widget.m.collapsed),
+        trailing: IconButton(
+          icon: Icon(Icons.more_vert),
+          onPressed: () {}, // TODO : widget.onMenuEvent,
+        ),
+      ),
     ];
 
     // Add items
-    children.addAll(widget.m.items);
+    if (!widget.m.collapsed)
+      children.addAll(widget.m.items);
+    // + Button
+    children.add(RaisedButton.icon(
+      onPressed: () {}, // TODO : widget.onItemEvent,
+      label: Text('Add'),
+      icon: Icon(Icons.add),
+      color: Theme.of(context).accentColor, // TODO : categoryColor,
+      textColor: Color(0xFFFFFFFF),
+    ));
 
     return Card(
-      child: Column(
-        children: children
-      ),
-    );
+      child: InkWell(
+            onLongPress: () {}, // TODO : widget.onMenuEvent,
+            child: Column(
+              children: children,
+            )));
   }
 }

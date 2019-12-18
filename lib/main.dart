@@ -32,7 +32,8 @@ class QuickShop extends StatelessWidget {
                   title: 'Strawberries',
                   checked: false
                 )),
-              ]
+              ],
+              collapsed: false
             ))
           ]
         )),

@@ -93,7 +93,7 @@ class _ListView extends State<ListPage> {
 
     // Add the category if there is input
     if (title.isNotEmpty)
-      addCategory(ListCategoryModel(title: title, items: []));
+      addCategory(ListCategoryModel(title: title, items: [], collapsed: false));
   }
 
   // Appends a category to the list
