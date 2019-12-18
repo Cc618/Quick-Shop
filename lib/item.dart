@@ -30,9 +30,7 @@ class _ItemView extends State<ListItem> {
         onChanged: (value) => setState(() => widget.m.checked = value),
         value: widget.m.checked,
       ),
-      Text(
-        widget.m.title
-      )
+      Text(widget.m.title)
     ]);
   }
 }

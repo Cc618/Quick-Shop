@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'category.dart';
 
 class ListPage extends StatefulWidget {
+  // To display messages on snackbar
+  static BuildContext scaffoldContext;
+
   // Model which handles all the data
   final ListModel m;
 
@@ -24,9 +27,6 @@ class ListModel {
 }
 
 class _ListView extends State<ListPage> {
-  // To display messages on snackbar
-  BuildContext _scaffoldContext;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +36,7 @@ class _ListView extends State<ListPage> {
       body: Builder(
         builder: (BuildContext context) {
           // Update the scaffold context
-          _scaffoldContext = context;
+          ListPage.scaffoldContext = context;
           
           return ListView.builder(
             itemBuilder: (context, i) => widget.m.categories[i],
@@ -78,7 +78,7 @@ class _ListView extends State<ListPage> {
                 onPressed: () {
                   // Error : No name
                   if (title.isEmpty)
-                    Scaffold.of(_scaffoldContext).showSnackBar(SnackBar(
+                    Scaffold.of(ListPage.scaffoldContext).showSnackBar(SnackBar(
                       content: Text('Please enter a title'),
                       duration: Duration(seconds: 1),
                     ));
