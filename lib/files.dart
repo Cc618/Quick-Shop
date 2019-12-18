@@ -48,5 +48,15 @@ Future<ListModel> readListFile(String listName) async {
     String jsonData = await file.readAsString();
 
     return ListModel.fromJson(listName, jsonData);
-  } catch (e) {}
+  } catch (e) {
+    return null;
+  }
+}
+
+Future<void> removeListFile(String listName) async
+  => await File(_listsDir.path + '/' + listName).delete();
+
+// Checks whether the list exists
+Future<bool> listExists(String title) async {
+  return await File(_listsDir.path + '/' + title).exists();
 }
