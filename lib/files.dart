@@ -3,6 +3,7 @@
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'list.dart';
+import 'sample_data.dart';
 
 // Whether initIO has been called
 bool ioInitialized = false;
@@ -16,33 +17,19 @@ Future<void> initIO() async {
   await _listsDir.create();
 
   ioInitialized = true;
-
-  print('IO initialized : ${_listsDir.listSync(recursive: true)}');
 }
 
-// // Write text
-// Future<void> writeFile(File file, String data) async {
-//   try {
-//     // Write to the file the data
-//     await file.writeAsString(data);
-//   } catch (e) {}
-// }
+// Return all list names
+Future<List<String>> listLists() async {
+  List<String> lists = [];
+  var stream = await _listsDir.list().toList();
 
-// // TODO : chg
-// // Write text
-// Future<void> writeListFile(String title, String data) async {
-//   try {
-//     // Write to the file the data
-//     await File(_appDir.path + '/' + title).writeAsString(data);
-//   } catch (e) {}
-// }
+  // Append all names
+  for (var list in stream)
+    lists.add(list.path.substring(list.path.lastIndexOf('/') + 1));
 
-// // TODO
-// Future<void> tstFile() async {
-//   // await File(_appDir.path + '/sample').writeAsString('Hello World');
-//   // print(await File(_listsDir.path + '/sample').readAsString());
-// }
-
+  return lists;
+} 
 
 // Write list file json data
 Future<void> writeListFile(ListModel list) async {

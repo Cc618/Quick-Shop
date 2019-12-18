@@ -112,3 +112,8 @@ class _ListView extends State<ListPage> {
       MenuItem('Remove', () => setState(() => widget.m.categories.remove(category)), true)
     ]);
 }
+
+// Describes a file linked to a list
+class ListDescriptor {
+  String name;
+}
