@@ -1,5 +1,6 @@
 // A list page
 
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'category.dart';
@@ -26,9 +27,43 @@ class ListModel {
     @required this.title,
     @required this.categories
   });
+
+  ListModel.fromJson(this.title, String jsonData) {
+    // Convert json
+    var data = jsonDecode(jsonData);
+
+    // Set properties
+    categories = [];
+
+    var cats = data['categories'] ?? [];
+
+    for (var c in cats)
+      categories.add(ListCategory(ListCategoryModel.fromMap(c)));
+  }
+
+  String toJson() {
+    List<Map<String, dynamic>> serializedCategories = [];
+    for (var c in categories)
+      serializedCategories.add(c.m.toMap());
+
+    Map<String, dynamic> data = {
+      'categories': serializedCategories,
+    };
+
+    return jsonEncode(data);
+  }
 }
 
 class _ListView extends State<ListPage> {
+  @protected
+  void initState() {
+    super.initState();
+
+    // Set onMenu function for each category
+    for (var cat in widget.m.categories)
+      cat.m.onMenu = onCategoryMenu;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +82,9 @@ class _ListView extends State<ListPage> {
         }
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: newCategoryDialog,
+        onPressed: () => print(widget.m.toJson()),
+        // TODO
+        // onPressed: newCategoryDialog,
         tooltip: 'Add Category',
         child: Icon(Icons.add),
       ),
@@ -63,8 +100,11 @@ class _ListView extends State<ListPage> {
       ));
 
   // Appends a category to the list
-  void addCategory(ListCategoryModel data) =>
-      setState(() => widget.m.categories.add(ListCategory(data, onCategoryMenu)));
+  // The onMenu function is initialised
+  void addCategory(ListCategoryModel data) {
+    data.onMenu = onCategoryMenu;
+    setState(() => widget.m.categories.add(ListCategory(data)));
+  }
 
   // When the user clicks on the more button in a category
   void onCategoryMenu(ListCategory category)

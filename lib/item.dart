@@ -20,6 +20,18 @@ class ListItemModel {
     @required this.title,
     @required this.checked
   });
+
+  ListItemModel.fromMap(Map<String, dynamic> data) {
+    title = data['title'];
+    checked = data['checked'];
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'checked': checked,
+    };
+  }
 }
 
 class _ItemView extends State<ListItem> {

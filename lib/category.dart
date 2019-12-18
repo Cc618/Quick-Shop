@@ -8,10 +8,8 @@ import 'dialogs.dart';
 class ListCategory extends StatefulWidget {
   // Model which handles all the data
   final ListCategoryModel m;
-  // When the more button is pressed
-  final Function(ListCategory) onMenu;
 
-  const ListCategory(this.m, this.onMenu, {Key key}) : super(key: key);
+  const ListCategory(this.m, {Key key}) : super(key: key);
 
   @override
   _CategoryView createState() => _CategoryView();
@@ -21,12 +19,38 @@ class ListCategoryModel {
   String title;
   List<ListItem> items;
   bool collapsed;
+  
+  // When the more button is pressed
+  Function(ListCategory) onMenu;
 
   ListCategoryModel({
     @required this.title,
     @required this.items,
     @required this.collapsed,
+    this.onMenu,
   });
+
+  ListCategoryModel.fromMap(Map<String, dynamic> data) {
+    title = data['title'];
+
+    items = [];
+    for (var item in data['items'])
+      items.add(ListItem(ListItemModel.fromMap(item)));
+
+    // Not collapsed by default
+    collapsed = false;
+  }
+
+  Map<String, dynamic> toMap() {
+    List<Map<String, dynamic>> serializedItems = [];
+    for (var item in items)
+      serializedItems.add(item.m.toMap());
+
+    return {
+      'title': title,
+      'items': serializedItems,
+    };
+  }
 }
 
 class _CategoryView extends State<ListCategory> {
@@ -41,7 +65,7 @@ class _CategoryView extends State<ListCategory> {
             setState(() => widget.m.collapsed = !widget.m.collapsed),
         trailing: IconButton(
           icon: Icon(Icons.more_vert),
-          onPressed: () => widget.onMenu(widget),
+          onPressed: () => widget.m.onMenu(widget),
         ),
       ),
     ];
@@ -61,7 +85,7 @@ class _CategoryView extends State<ListCategory> {
 
     return Card(
       child: InkWell(
-            onLongPress: () => widget.onMenu(widget),
+            onLongPress: () => widget.m.onMenu(widget),
             child: Column(
               children: children,
             )));
