@@ -82,7 +82,7 @@ class _ListView extends State<ListPage> {
         }
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => print(widget.m.toJson()),
+        onPressed: () async => print('TEST ZONE'),
         // TODO
         // onPressed: newCategoryDialog,
         tooltip: 'Add Category',

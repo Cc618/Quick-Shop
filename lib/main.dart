@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'list.dart';
-import 'category.dart';
-import 'item.dart';
+import 'files.dart';
 
 void main() => runApp(QuickShop());
 
@@ -10,14 +9,22 @@ String jsonList = '{"categories":[{"title":"Fruits","items":[{"title":"Bananas",
 
 // App entry
 class QuickShop extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
+    if (!ioInitialized)
+      initIO().then((_) async {
+        // writeListFile(ListModel.fromJson('sample', jsonList));
+        print((await readListFile('sample')).toJson());
+      });
+
     return MaterialApp(
       title: 'Quick Shop',
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
       home: ListPage(ListModel.fromJson('First List', jsonList)),
+      // TODO
       // home: ListPage(ListModel(
       //     title: 'First List',
       //     categories: [
