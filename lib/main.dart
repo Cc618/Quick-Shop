@@ -17,24 +17,24 @@ class QuickShop extends StatelessWidget {
       home: ListPage(ListModel(
           title: 'First List',
           categories: [
-            ListCategory(ListCategoryModel(
-              title: 'Fruits',
-              items: [
-                ListItem(ListItemModel(
-                  title: 'Bananas',
-                  checked: false
-                )),
-                ListItem(ListItemModel(
-                  title: 'Apples',
-                  checked: true
-                )),
-                ListItem(ListItemModel(
-                  title: 'Strawberries',
-                  checked: false
-                )),
-              ],
-              collapsed: false
-            ))
+            // ListCategory(ListCategoryModel(
+            //   title: 'Fruits',
+            //   items: [
+            //     ListItem(ListItemModel(
+            //       title: 'Bananas',
+            //       checked: false
+            //     )),
+            //     ListItem(ListItemModel(
+            //       title: 'Apples',
+            //       checked: true
+            //     )),
+            //     ListItem(ListItemModel(
+            //       title: 'Strawberries',
+            //       checked: false
+            //     )),
+            //   ],
+            //   collapsed: false
+            // ))
           ]
         )),
     );

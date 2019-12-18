@@ -1,5 +1,6 @@
 // A list page
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'category.dart';
 import 'dialogs.dart';
@@ -63,5 +64,11 @@ class _ListView extends State<ListPage> {
 
   // Appends a category to the list
   void addCategory(ListCategoryModel data) =>
-      setState(() => widget.m.categories.add(ListCategory(data)));
+      setState(() => widget.m.categories.add(ListCategory(data, onCategoryMenu)));
+
+  // When the user clicks on the more button in a category
+  void onCategoryMenu(ListCategory category)
+    => menuDialog(category.m.title, context, [
+      MenuItem('Remove', () => setState(() => widget.m.categories.remove(category)), true)
+    ]);
 }

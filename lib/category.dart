@@ -8,8 +8,10 @@ import 'dialogs.dart';
 class ListCategory extends StatefulWidget {
   // Model which handles all the data
   final ListCategoryModel m;
+  // When the more button is pressed
+  final Function(ListCategory) onMenu;
 
-  const ListCategory(this.m, {Key key}) : super(key: key);
+  const ListCategory(this.m, this.onMenu, {Key key}) : super(key: key);
 
   @override
   _CategoryView createState() => _CategoryView();
@@ -39,7 +41,7 @@ class _CategoryView extends State<ListCategory> {
             setState(() => widget.m.collapsed = !widget.m.collapsed),
         trailing: IconButton(
           icon: Icon(Icons.more_vert),
-          onPressed: () {}, // TODO : widget.onMenuEvent,
+          onPressed: () => widget.onMenu(widget),
         ),
       ),
     ];
@@ -59,7 +61,7 @@ class _CategoryView extends State<ListCategory> {
 
     return Card(
       child: InkWell(
-            onLongPress: () {}, // TODO : widget.onMenuEvent,
+            onLongPress: () => widget.onMenu(widget),
             child: Column(
               children: children,
             )));
