@@ -2,6 +2,9 @@
 
 import 'package:flutter/material.dart';
 
+// The radius of a corner
+double dialogCornerRadius = 16;
+
 // A dialog with one text field
 Future<void> lineDialog(
     String title,
@@ -57,8 +60,9 @@ class MenuItem {
   String title;
   Function onPressed;
   bool isDangerous;
+  IconData icon;
 
-  MenuItem(this.title, this.onPressed, [this.isDangerous = false]);
+  MenuItem(this.title, this.onPressed, this.icon, [this.isDangerous = false]);
 }
 
 // A dialog with one text field
@@ -68,23 +72,28 @@ Future<void> menuDialog(
   var entries = List<Widget>();
 
   for (MenuItem item in items)
-    entries.add(SimpleDialogOption(
-      child: Text(
-        item.title,
-        style: TextStyle(
-          color: item.isDangerous ? Theme.of(context).errorColor : Theme.of(context).textTheme.subtitle.color,
-        )
-      ),
-      onPressed: () {
-        item.onPressed();
-        Navigator.of(context).pop();
-      }
-    ));
+    entries.add(ListTile(
+        leading: Icon(item.icon),
+        title: Text(item.title,
+            style: TextStyle(
+              color: item.isDangerous
+                  ? Theme.of(context).errorColor
+                  : Theme.of(context).textTheme.subtitle.color,
+            )),
+        onTap: () {
+          item.onPressed();
+          Navigator.of(context).pop();
+        }));
 
   // Display dialog
-  await showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return SimpleDialog(title: Text(title), children: entries);
-    });
+  await showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(dialogCornerRadius)
+      ),
+      context: context,
+      builder: (BuildContext bc) {
+        return Container(
+          child: new Wrap(children: entries),
+        );
+      });
 }

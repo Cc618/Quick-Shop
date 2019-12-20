@@ -17,24 +17,36 @@ class _MenuView extends State<ListMenu> {
 
   BuildContext _scaffoldContext;
 
+  final listKey = GlobalKey<AnimatedListState>();
+
   @override
   Widget build(BuildContext context) {
-    if (!ioInitialized) initIO().then((_) => updateLists());
+    if (!ioInitialized)
+      initIO().then((_) => updateLists());
 
     return Scaffold(
       appBar: AppBar(
         title: Text('My Lists'),
       ),
-      body: Builder(
-        builder: (scaffoldContext) {
-          _scaffoldContext = scaffoldContext;
-          
-          return ListView.builder(
-            itemBuilder: (context, i) => lists[i],
-            itemCount: lists.length,
-          );
-        }
-      ),
+      body: Builder(builder: (scaffoldContext) {
+        _scaffoldContext = scaffoldContext;
+
+      return ListView.builder(
+          itemBuilder: (context, i) => lists[i],
+          itemCount: lists.length,
+        );
+
+        // TODO : Implement animated list
+        // return AnimatedList(
+        //   key: listKey,
+        //   itemBuilder: (context, i, anim) => SizeTransition(
+        //     sizeFactor: anim,
+        //     axis: Axis.vertical,
+        //     child: lists[i],
+        //   ),
+        //   initialItemCount: lists.length,
+        // );
+      }),
       floatingActionButton: FloatingActionButton(
         onPressed: () => createList(),
         child: Icon(Icons.add),
@@ -47,7 +59,10 @@ class _MenuView extends State<ListMenu> {
     var listModel = await readListFile(title);
 
     await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => ListPage(listModel)));
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                ListPage(listModel)));
   }
 
   Future<void> updateLists() async {
@@ -60,32 +75,39 @@ class _MenuView extends State<ListMenu> {
             child: ListTile(
           title: Text(list),
           onTap: () => loadList(list),
-          onLongPress: () => removeList(list),
-          trailing:
-              Icon(Icons.arrow_forward_ios), // TODO : More menu with delete
+          onLongPress: () => showListMenu(list),
+          trailing: Icon(Icons.arrow_forward_ios), // TODO : Reorder handle
         )));
     });
   }
 
-  void createList() => lineDialog(
-    'New List', 'List Title', 'Please enter a title', context, _scaffoldContext,
-    (title) async {
-      if (!await listExists(title))
-      {
-        await writeListFile(ListModel(title: title, categories: []));
-        await updateLists();
-        setState(() {});
-      }
-    });
-  
-  Future<void> removeList(String title) => menuDialog(
-    title, context, [
-      MenuItem('Remove', () async {
-          await removeListFile(title);
+  void createList() => lineDialog('New List', 'List Title',
+          'Please enter a title', context, _scaffoldContext, (title) async {
+        if (!await listExists(title)) {
+          await writeListFile(ListModel(title: title, categories: []));
           await updateLists();
-
           setState(() {});
-        },
-        true
-      )]);
+        }
+      });
+
+  // When we long tap a list
+  Future<void> showListMenu(String title) async {
+    bool rename = false;
+
+    await menuDialog(title, context, [
+      MenuItem('Rename', () => rename = true, Icons.edit, false),
+      MenuItem('Remove', () async {
+        await removeListFile(title);
+        await updateLists();
+      }, Icons.delete, true),
+    ]);
+
+    if (rename)
+      await lineDialog('Rename', 'New title', 'Please select a new title',
+          context, _scaffoldContext, (input) async {
+        await renameListFile(title, input);
+
+        updateLists();
+      });
+  }
 }

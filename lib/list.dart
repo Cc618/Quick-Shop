@@ -13,8 +13,8 @@ class ListPage extends StatefulWidget {
 
   // Model which handles all the data
   final ListModel m;
-
-  ListPage(this.m, {Key key}) : super(key: key);
+  
+  const ListPage(this.m, {Key key}) : super(key: key);
 
   @override
   _ListView createState() => _ListView();
@@ -126,11 +126,11 @@ class _ListView extends State<ListPage> with WidgetsBindingObserver {
   // When the user clicks on the more button in a category
   void onCategoryMenu(ListCategory category)
     => menuDialog(category.m.title, context, [
-      MenuItem('Remove', () => setState(() => widget.m.categories.remove(category)), true)
+      MenuItem('Remove', () => setState(() => widget.m.categories.remove(category)), Icons.delete, true)
     ]);
 
   // Save or update the file on the device
-  void save()
+  Future<void> save()
     => writeListFile(widget.m);
 }
 

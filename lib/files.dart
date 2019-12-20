@@ -3,7 +3,6 @@
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'list.dart';
-import 'sample_data.dart';
 
 // Whether initIO has been called
 bool ioInitialized = false;
@@ -23,6 +22,10 @@ Future<void> initIO() async {
 Future<List<String>> listLists() async {
   List<String> lists = [];
   var stream = await _listsDir.list().toList();
+
+  stream.sort((a, b)
+    => -File(a.path).lastModifiedSync().compareTo(File(b.path).lastModifiedSync())
+  );
 
   // Append all names
   for (var list in stream)
@@ -60,3 +63,7 @@ Future<void> removeListFile(String listName) async
 Future<bool> listExists(String title) async {
   return await File(_listsDir.path + '/' + title).exists();
 }
+
+// TODO : Verify / and other dangerous characters
+Future<void> renameListFile(String listName, String newName) async
+  => await File(_listsDir.path + '/' + listName).rename(_listsDir.path + '/' + newName);
