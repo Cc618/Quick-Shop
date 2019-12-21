@@ -37,12 +37,16 @@ class ListItemModel {
 class _ItemView extends State<ListItem> {
   @override
   Widget build(BuildContext context) {
-    return Row(children: <Widget>[
-      Checkbox(
-        onChanged: (value) => setState(() => widget.m.checked = value),
-        value: widget.m.checked,
-      ),
-      Text(widget.m.title)
-    ]);
+    return Row(
+      children: <Widget>[
+        Checkbox(
+          onChanged: (value) => setState(() => widget.m.checked = value),
+          value: widget.m.checked,
+        ),
+        Expanded(
+          child: Text(widget.m.title)
+        )
+      ]
+    );
   }
 }
