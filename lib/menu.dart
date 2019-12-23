@@ -1,6 +1,8 @@
 // The menu where we display the list of shopping lists
 
 import 'package:flutter/material.dart';
+import 'dialogs.dart';
+import 'files.dart';
 import 'list.dart';
 import 'files.dart';
 import 'dialogs.dart';
@@ -72,12 +74,18 @@ class _MenuView extends State<ListMenu> {
 
     setState(() {
       for (var list in listNames)
-        lists.add(Card(
+        lists.add(
+          Dismissible(
+          key: UniqueKey(),
+          onDismissed: (dir) => removeListFile(list),
+          confirmDismiss: (dir) => confirmDialog('Remove $list ?', context),
+          child: Card(
             child: ListTile(
           title: Text(list),
           onTap: () => loadList(list),
           onLongPress: () => showListMenu(list),
           trailing: Icon(Icons.arrow_forward_ios), // TODO : Reorder handle
+          )
         )));
     });
   }

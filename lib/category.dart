@@ -90,6 +90,7 @@ class _CategoryView extends State<ListCategory> {
 
     return Dismissible(
       key: UniqueKey(),
+      confirmDismiss: (dir) => confirmDialog('Remove ${widget.m.title} ?', context),
       onDismissed: (dir) => widget.m.onRemoval(widget),
         child: Card(
             child: Column(

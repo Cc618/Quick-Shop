@@ -98,3 +98,34 @@ Future<void> menuDialog(
         );
       });
 }
+
+// To confirm an action
+Future<bool> confirmDialog(
+    String title,
+    BuildContext context) async {
+  bool ok = false;
+
+  // Show dialog
+  await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop()
+            ),
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () {
+                ok = true;
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      });
+ 
+  return ok;
+}
