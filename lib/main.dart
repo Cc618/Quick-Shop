@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:quick_shop/menu.dart';
-import 'list.dart';
-import 'files.dart';
-import 'sample_data.dart';
 
 void main() => runApp(QuickShop());
 

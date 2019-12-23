@@ -80,7 +80,7 @@ class _ListView extends State<ListPage> with WidgetsBindingObserver {
 
     // Set onMenu function for each category
     for (var cat in widget.m.categories)
-      cat.m.onMenu = onCategoryMenu;
+      cat.m.onRemoveEntry = onCategoryRemoveEntry;
   }
 
   @override
@@ -119,15 +119,12 @@ class _ListView extends State<ListPage> with WidgetsBindingObserver {
   // Appends a category to the list
   // The onMenu function is initialised
   void addCategory(ListCategoryModel data) {
-    data.onMenu = onCategoryMenu;
+    data.onRemoveEntry = onCategoryRemoveEntry;
     setState(() => widget.m.categories.add(ListCategory(data)));
   }
 
-  // When the user clicks on the more button in a category
-  void onCategoryMenu(ListCategory category)
-    => menuDialog(category.m.title, context, [
-      MenuItem('Remove', () => setState(() => widget.m.categories.remove(category)), Icons.delete, true)
-    ]);
+  void onCategoryRemoveEntry(ListCategory category)
+    => setState(() => widget.m.categories.remove(category));
 
   // Save or update the file on the device
   Future<void> save()

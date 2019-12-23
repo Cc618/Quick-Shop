@@ -20,14 +20,14 @@ class ListCategoryModel {
   List<ListItem> items;
   bool collapsed;
   
-  // When the more button is pressed
-  Function(ListCategory) onMenu;
+  // When we hit the remove entry in the more menu
+  Function(ListCategory) onRemoveEntry;
 
   ListCategoryModel({
     @required this.title,
     @required this.items,
     @required this.collapsed,
-    this.onMenu,
+    this.onRemoveEntry,
   });
 
   ListCategoryModel.fromMap(Map<String, dynamic> data) {
@@ -51,6 +51,10 @@ class ListCategoryModel {
       'items': serializedItems,
     };
   }
+
+  // Removes only the checked items
+  void removeCheckedItems()
+    => items.removeWhere((item) => item.m.checked);
 }
 
 class _CategoryView extends State<ListCategory> {
@@ -65,7 +69,7 @@ class _CategoryView extends State<ListCategory> {
             setState(() => widget.m.collapsed = !widget.m.collapsed),
         trailing: IconButton(
           icon: Icon(Icons.more_vert),
-          onPressed: () => widget.m.onMenu(widget),
+          onPressed: onMenu
         ),
       ),
     ];
@@ -85,7 +89,7 @@ class _CategoryView extends State<ListCategory> {
 
     return Card(
       child: InkWell(
-            onLongPress: () => widget.m.onMenu(widget),
+            onLongPress: onMenu,
             child: Column(
               children: children,
             )));
@@ -100,4 +104,11 @@ class _CategoryView extends State<ListCategory> {
         widget.m.items.add(ListItem(ListItemModel(title: input, checked: false)));
       }));
 
+  
+  // When the user clicks on the more button
+  void onMenu()
+    => menuDialog(widget.m.title, context, [
+      MenuItem('Remove checked items', () => setState(() => widget.m.removeCheckedItems()), Icons.delete_sweep),
+      MenuItem('Remove', () => widget.m.onRemoveEntry(widget), Icons.delete, true),
+    ]);
 }
