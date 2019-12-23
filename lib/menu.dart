@@ -65,6 +65,7 @@ class _MenuView extends State<ListMenu> {
                 ListPage(listModel)));
   }
 
+  // Loads all list files in the view
   Future<void> updateLists() async {
     lists = [];
     List<String> listNames = await listLists();

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'item.dart';
+import 'item.dart';
 import 'list.dart';
 import 'dialogs.dart';
 
@@ -59,6 +60,14 @@ class ListCategoryModel {
 
 class _CategoryView extends State<ListCategory> {
   @override
+  void initState() {
+    super.initState();
+
+    for (var item in widget.m.items)
+      item.m.onRemoval = onItemRemoval;
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Generate the children
     List<Widget> children = <Widget>[
@@ -88,11 +97,10 @@ class _CategoryView extends State<ListCategory> {
     ));
 
     return Card(
-      child: InkWell(
-            onLongPress: onMenu,
-            child: Column(
-              children: children,
-            )));
+      child: Column(
+        children: children,
+      )
+    );
   }
 
   // Shows the dialog to add an item
@@ -101,14 +109,24 @@ class _CategoryView extends State<ListCategory> {
       'New Item', 'Item Title', 'Please enter a title',
       context, ListPage.scaffoldContext, (input) => setState(() {
         widget.m.collapsed = false;
-        widget.m.items.add(ListItem(ListItemModel(title: input, checked: false)));
+        widget.m.items.add(ListItem(ListItemModel(title: input, checked: false), key: UniqueKey()));
       }));
 
-  
   // When the user clicks on the more button
   void onMenu()
     => menuDialog(widget.m.title, context, [
       MenuItem('Remove checked items', () => setState(() => widget.m.removeCheckedItems()), Icons.delete_sweep),
       MenuItem('Remove', () => widget.m.onRemoveEntry(widget), Icons.delete, true),
     ]);
+
+  // When we remove an item by a swipe
+  void onItemRemoval(ListItem item)
+    => setState(() {
+      widget.m.items.remove(item);
+
+      // Toast
+      Scaffold.of(ListPage.scaffoldContext).showSnackBar(SnackBar(
+        content: Text('${widget.m.title}/${item.m.title} removed'),
+      ));
+    });
 }

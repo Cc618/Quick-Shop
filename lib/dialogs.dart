@@ -25,6 +25,7 @@ Future<void> lineDialog(
             autofocus: true,
             decoration: InputDecoration.collapsed(hintText: hint),
             onChanged: (String s) => input = s,
+            textCapitalization: TextCapitalization.words,
           ),
           actions: <Widget>[
             FlatButton(

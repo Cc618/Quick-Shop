@@ -16,9 +16,12 @@ class ListItemModel {
   String title;
   bool checked;
   
+  Function(ListItem) onRemoval;
+
   ListItemModel({
     @required this.title,
-    @required this.checked
+    @required this.checked,
+    this.onRemoval
   });
 
   ListItemModel.fromMap(Map<String, dynamic> data) {
@@ -37,16 +40,20 @@ class ListItemModel {
 class _ItemView extends State<ListItem> {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Checkbox(
-          onChanged: (value) => setState(() => widget.m.checked = value),
-          value: widget.m.checked,
-        ),
-        Expanded(
-          child: Text(widget.m.title)
-        )
-      ]
+    return Dismissible(
+      key: UniqueKey(),
+      onDismissed: (dir) => widget.m.onRemoval(widget),
+      child: Row(
+        children: <Widget>[
+          Checkbox(
+            onChanged: (value) => setState(() => widget.m.checked = value),
+            value: widget.m.checked,
+          ),
+          Expanded(
+            child: Text(widget.m.title)
+          )
+        ]
+      )
     );
   }
 }
