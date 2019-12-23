@@ -20,15 +20,15 @@ class ListCategoryModel {
   String title;
   List<ListItem> items;
   bool collapsed;
-  
+
   // When we hit the remove entry in the more menu
-  Function(ListCategory) onRemoveEntry;
+  Function(ListCategory) onRemoval;
 
   ListCategoryModel({
     @required this.title,
     @required this.items,
     @required this.collapsed,
-    this.onRemoveEntry,
+    this.onRemoval,
   });
 
   ListCategoryModel.fromMap(Map<String, dynamic> data) {
@@ -44,8 +44,7 @@ class ListCategoryModel {
 
   Map<String, dynamic> toMap() {
     List<Map<String, dynamic>> serializedItems = [];
-    for (var item in items)
-      serializedItems.add(item.m.toMap());
+    for (var item in items) serializedItems.add(item.m.toMap());
 
     return {
       'title': title,
@@ -54,8 +53,7 @@ class ListCategoryModel {
   }
 
   // Removes only the checked items
-  void removeCheckedItems()
-    => items.removeWhere((item) => item.m.checked);
+  void removeCheckedItems() => items.removeWhere((item) => item.m.checked);
 }
 
 class _CategoryView extends State<ListCategory> {
@@ -63,8 +61,7 @@ class _CategoryView extends State<ListCategory> {
   void initState() {
     super.initState();
 
-    for (var item in widget.m.items)
-      item.m.onRemoval = onItemRemoval;
+    for (var item in widget.m.items) item.m.onRemoval = onItemRemoval;
   }
 
   @override
@@ -74,18 +71,13 @@ class _CategoryView extends State<ListCategory> {
       // Title
       ListTile(
         title: Text(widget.m.title),
-        onTap: () =>
-            setState(() => widget.m.collapsed = !widget.m.collapsed),
-        trailing: IconButton(
-          icon: Icon(Icons.more_vert),
-          onPressed: onMenu
-        ),
+        onTap: () => setState(() => widget.m.collapsed = !widget.m.collapsed),
+        trailing: IconButton(icon: Icon(Icons.more_vert), onPressed: onMenu),
       ),
     ];
 
     // Add items
-    if (!widget.m.collapsed)
-      children.addAll(widget.m.items);
+    if (!widget.m.collapsed) children.addAll(widget.m.items);
 
     // Add Button
     children.add(RaisedButton.icon(
@@ -96,37 +88,46 @@ class _CategoryView extends State<ListCategory> {
       textColor: Color(0xFFFFFFFF),
     ));
 
-    return Card(
-      child: Column(
-        children: children,
-      )
-    );
+    return Dismissible(
+      key: UniqueKey(),
+      onDismissed: (dir) => widget.m.onRemoval(widget),
+        child: Card(
+            child: Column(
+      children: children,
+    )));
   }
 
   // Shows the dialog to add an item
-  void addItemDialog()
-    => lineDialog(
-      'New Item', 'Item Title', 'Please enter a title',
-      context, ListPage.scaffoldContext, (input) => setState(() {
-        widget.m.collapsed = false;
-        widget.m.items.add(ListItem(ListItemModel(title: input, checked: false), key: UniqueKey()));
-      }));
+  void addItemDialog() => lineDialog(
+      'New Item',
+      'Item Title',
+      'Please enter a title',
+      context,
+      ListPage.scaffoldContext,
+      (input) => setState(() {
+            widget.m.collapsed = false;
+            widget.m.items.add(ListItem(
+                ListItemModel(title: input, checked: false),
+                key: UniqueKey()));
+          }));
 
   // When the user clicks on the more button
-  void onMenu()
-    => menuDialog(widget.m.title, context, [
-      MenuItem('Remove checked items', () => setState(() => widget.m.removeCheckedItems()), Icons.delete_sweep),
-      MenuItem('Remove', () => widget.m.onRemoveEntry(widget), Icons.delete, true),
-    ]);
+  void onMenu() => menuDialog(widget.m.title, context, [
+        MenuItem(
+            'Remove checked items',
+            () => setState(() => widget.m.removeCheckedItems()),
+            Icons.delete_sweep),
+        MenuItem(
+            'Remove', () => widget.m.onRemoval(widget), Icons.delete, true),
+      ]);
 
   // When we remove an item by a swipe
-  void onItemRemoval(ListItem item)
-    => setState(() {
-      widget.m.items.remove(item);
+  void onItemRemoval(ListItem item) => setState(() {
+        widget.m.items.remove(item);
 
-      // Toast
-      Scaffold.of(ListPage.scaffoldContext).showSnackBar(SnackBar(
-        content: Text('${widget.m.title}/${item.m.title} removed'),
-      ));
-    });
+        // Toast
+        Scaffold.of(ListPage.scaffoldContext).showSnackBar(SnackBar(
+          content: Text('${widget.m.title}/${item.m.title} removed'),
+        ));
+      });
 }

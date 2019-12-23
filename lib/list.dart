@@ -80,7 +80,7 @@ class _ListView extends State<ListPage> with WidgetsBindingObserver {
 
     // Set onMenu function for each category
     for (var cat in widget.m.categories)
-      cat.m.onRemoveEntry = onCategoryRemoveEntry;
+      cat.m.onRemoval = onCategoryRemoveEntry;
   }
 
   @override
@@ -119,7 +119,7 @@ class _ListView extends State<ListPage> with WidgetsBindingObserver {
   // Appends a category to the list
   // The onMenu function is initialised
   void addCategory(ListCategoryModel data) {
-    data.onRemoveEntry = onCategoryRemoveEntry;
+    data.onRemoval = onCategoryRemoveEntry;
     setState(() => widget.m.categories.add(ListCategory(data)));
   }
 
