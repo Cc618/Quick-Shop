@@ -4,14 +4,19 @@ import 'package:flutter/material.dart';
 import 'dialogs.dart';
 import 'files.dart';
 import 'list.dart';
-import 'files.dart';
-import 'dialogs.dart';
+// TODO : Implement url launching
+// import 'package:url_launcher/url_launcher.dart';
 
 class ListMenu extends StatefulWidget {
   ListMenu({Key key}) : super(key: key);
 
   @override
   _MenuView createState() => _MenuView();
+}
+
+enum _MoreMenuEntries {
+  settings,
+  about
 }
 
 class _MenuView extends State<ListMenu> {
@@ -29,6 +34,32 @@ class _MenuView extends State<ListMenu> {
     return Scaffold(
       appBar: AppBar(
         title: Text('My Lists'),
+        actions: <Widget>[
+          PopupMenuButton<_MoreMenuEntries>(
+            onSelected: (sel) {
+              switch (sel) {
+                case _MoreMenuEntries.settings:
+                  displaySettings();
+                  break;
+
+                case _MoreMenuEntries.about:
+                  displayAbout();
+                  break;
+              }
+            },
+            icon: Icon(Icons.more_vert),
+            itemBuilder: (context) => [
+              const PopupMenuItem<_MoreMenuEntries>(
+                value: _MoreMenuEntries.settings,
+                child: Text('Settings'),
+              ),
+              const PopupMenuItem<_MoreMenuEntries>(
+                value: _MoreMenuEntries.about,
+                child: Text('About'),
+              ),
+            ]
+          )
+        ],
       ),
       body: Builder(builder: (scaffoldContext) {
         _scaffoldContext = scaffoldContext;
@@ -84,7 +115,7 @@ class _MenuView extends State<ListMenu> {
           title: Text(list),
           onTap: () => loadList(list),
           onLongPress: () => showListMenu(list),
-          trailing: Icon(Icons.arrow_forward_ios), // TODO : Reorder handle
+          trailing: Icon(Icons.arrow_forward_ios),
           )
         )));
     });
@@ -119,4 +150,27 @@ class _MenuView extends State<ListMenu> {
         updateLists();
       });
   }
+
+  Future<void> launchUrl(String url) async {
+    // TODO : Implement url launching
+    // if (await canLaunch(url))
+    //   await launch(url);
+  }
+
+  void displayAbout()
+    => showAboutDialog(
+      context: context,
+      applicationName: 'Quick-Shop',
+      applicationVersion: '1.0',
+      children: [
+        Text('This application is free and open source :'),
+        RaisedButton(
+          child: Text('Github'),
+          onPressed: () => launchUrl('https://github.com/Cc618/Quick-Shop')
+        )
+      ]
+    );
+  
+  void displaySettings()
+  {}
 }

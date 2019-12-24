@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'item.dart';
-import 'item.dart';
 import 'list.dart';
 import 'dialogs.dart';
 
