@@ -1,6 +1,9 @@
 // The menu where we display the list of shopping lists
 
 import 'package:flutter/material.dart';
+import 'package:quick_shop/main.dart';
+import 'package:quick_shop/settings.dart';
+import 'package:quick_shop/settings_data.dart';
 import 'dialogs.dart';
 import 'files.dart';
 import 'list.dart';
@@ -33,6 +36,7 @@ class _MenuView extends State<ListMenu> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Settings.primaryColor,
         title: Text('My Lists'),
         actions: <Widget>[
           PopupMenuButton<_MoreMenuEntries>(
@@ -171,6 +175,13 @@ class _MenuView extends State<ListMenu> {
       ]
     );
   
-  void displaySettings()
-  {}
+  Future<void> displaySettings() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              SettingsPage()));
+
+    QuickShopState.reload();
+  }
 }
