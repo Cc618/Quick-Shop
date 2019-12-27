@@ -2,25 +2,13 @@
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'props.dart';
 import 'main.dart';
 
 class Settings {
   // Returns the color data
-  static MaterialColor get primaryColor {
-    switch (primaryColorName) {
-      case 'red':
-        return Colors.red;
-      case 'blue':
-        return Colors.blue;
-      case 'green':
-        return Colors.green;
-      case 'yellow':
-        return Colors.yellow;
-      case 'purple':
-      default:
-        return Colors.purple;
-    }
-  }
+  static MaterialColor get primaryColor
+    => deserializeColor(primaryColorName);
 
   // ID for primaryColor
   static String primaryColorName = 'purple';

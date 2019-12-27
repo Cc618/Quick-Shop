@@ -2,8 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:quick_shop/color_picker.dart';
-import 'package:quick_shop/main.dart';
+import 'color_picker.dart';
 import 'settings_data.dart';
 import 'files.dart';
 import 'dialogs.dart';

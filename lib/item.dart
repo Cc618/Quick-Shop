@@ -15,12 +15,14 @@ class ListItem extends StatefulWidget {
 class ListItemModel {
   String title;
   bool checked;
+  Color color;
   
   Function(ListItem) onRemoval;
 
   ListItemModel({
     @required this.title,
     @required this.checked,
+    @required this.color,
     this.onRemoval
   });
 
@@ -46,6 +48,7 @@ class _ItemView extends State<ListItem> {
       child: Row(
         children: <Widget>[
           Checkbox(
+            activeColor: widget.m.color,
             onChanged: (value) => setState(() => widget.m.checked = value),
             value: widget.m.checked,
           ),

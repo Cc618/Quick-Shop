@@ -1,9 +1,11 @@
 // A category handle items
 
 import 'package:flutter/material.dart';
+import 'color_picker.dart';
 import 'item.dart';
 import 'list.dart';
 import 'dialogs.dart';
+import 'props.dart';
 
 class ListCategory extends StatefulWidget {
   // Model which handles all the data
@@ -19,6 +21,10 @@ class ListCategoryModel {
   String title;
   List<ListItem> items;
   bool collapsed;
+  String colorId;
+
+  MaterialColor get color
+    => deserializeColor(colorId);
 
   // When we hit the remove entry in the more menu
   Function(ListCategory) onRemoval;
@@ -32,10 +38,13 @@ class ListCategoryModel {
 
   ListCategoryModel.fromMap(Map<String, dynamic> data) {
     title = data['title'];
+    colorId = data['color'];
 
     items = [];
     for (var item in data['items'])
-      items.add(ListItem(ListItemModel.fromMap(item)));
+      items.add(ListItem(
+        ListItemModel.fromMap(item),
+      ));
 
     // Not collapsed by default
     collapsed = false;
@@ -43,11 +52,13 @@ class ListCategoryModel {
 
   Map<String, dynamic> toMap() {
     List<Map<String, dynamic>> serializedItems = [];
-    for (var item in items) serializedItems.add(item.m.toMap());
+    for (var item in items)
+      serializedItems.add(item.m.toMap());
 
     return {
       'title': title,
       'items': serializedItems,
+      'color': colorId,
     };
   }
 
@@ -56,6 +67,17 @@ class ListCategoryModel {
 }
 
 class _CategoryView extends State<ListCategory> {
+  // Whether all color properties have been parsed
+  bool colorInitialized = false;
+  // For no color
+  bool isColored;
+  // Header color
+  Color color;
+  // Text + icon color
+  Color textColor;
+  // Add item button background color
+  Color accent;
+
   @override
   void initState() {
     super.initState();
@@ -65,14 +87,41 @@ class _CategoryView extends State<ListCategory> {
 
   @override
   Widget build(BuildContext context) {
+    // Set colors if there are not initialized
+    if (!colorInitialized) {
+      // This colors
+      isColored = widget.m.colorId != null;
+      color = isColored ? widget.m.color.shade400 : Colors.white;
+      textColor = isColored ? Colors.white : Theme.of(context).textTheme.button.color;
+      accent = isColored ? color : Theme.of(context).accentColor;
+
+      // Items colors
+      for (var item in widget.m.items)
+        item.m.color = accent;
+
+      colorInitialized = true;
+    }
+
     // Generate the children
     List<Widget> children = <Widget>[
       // Title
-      ListTile(
-        title: Text(widget.m.title),
-        onTap: () => setState(() => widget.m.collapsed = !widget.m.collapsed),
-        trailing: IconButton(icon: Icon(Icons.more_vert), onPressed: onMenu),
-      ),
+      Container(
+        color: color,
+        child: ListTile(
+          title: Text(
+            widget.m.title,
+            style: TextStyle(
+              color: textColor
+            )
+          ),
+          onTap: () => setState(() => widget.m.collapsed = !widget.m.collapsed),
+          trailing: IconButton(
+            color: textColor,
+            icon: Icon(Icons.more_vert),
+            onPressed: onMenu
+          ),
+        ),
+      )
     ];
 
     // Add items
@@ -83,8 +132,8 @@ class _CategoryView extends State<ListCategory> {
       onPressed: addItemDialog,
       label: Text('Add'),
       icon: Icon(Icons.add),
-      color: Theme.of(context).accentColor, // TODO : categoryColor,
-      textColor: Color(0xFFFFFFFF),
+      color: accent,
+      textColor: Colors.white,
     ));
 
     return Dismissible(
@@ -92,9 +141,14 @@ class _CategoryView extends State<ListCategory> {
       confirmDismiss: (dir) => confirmDialog('Remove ${widget.m.title} ?', context),
       onDismissed: (dir) => widget.m.onRemoval(widget),
         child: Card(
-            child: Column(
-      children: children,
-    )));
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0)
+          ),
+          child: Column(
+            children: children,
+          )
+        )
+      );
   }
 
   // Shows the dialog to add an item
@@ -107,19 +161,50 @@ class _CategoryView extends State<ListCategory> {
       (input) => setState(() {
             widget.m.collapsed = false;
             widget.m.items.add(ListItem(
-                ListItemModel(title: input, checked: false),
+                ListItemModel(
+                  title: input,
+                  checked: false,
+                  color: widget.m.color
+                ),
                 key: UniqueKey()));
           }));
 
   // When the user clicks on the more button
-  void onMenu() => menuDialog(widget.m.title, context, [
-        MenuItem(
-            'Remove checked items',
-            () => setState(() => widget.m.removeCheckedItems()),
-            Icons.delete_sweep),
-        MenuItem(
-            'Remove', () => widget.m.onRemoval(widget), Icons.delete, true),
+  Future<void> onMenu() async {
+    bool colorize = false;
+    
+    await menuDialog(widget.m.title, context, [
+      MenuItem(
+        'Change Color',
+        () => colorize = true,
+        Icons.colorize
+      ),
+      MenuItem(
+          'Remove checked items',
+          () => setState(() => widget.m.removeCheckedItems()),
+          Icons.delete_sweep),
+      MenuItem(
+          'Remove', () => widget.m.onRemoval(widget), Icons.delete, true),
+    ]);
+
+    if (colorize) {
+      var color = await pickColor(context, [
+        'white',
+        'red',
+        'purple',
+        'blue',
+        'green',
       ]);
+
+      if (color != null)
+        setState(() {
+          widget.m.colorId = color == 'white' ? null : color;
+
+          // To update generated color values
+          colorInitialized = false;
+        });
+    }
+  }
 
   // When we remove an item by a swipe
   void onItemRemoval(ListItem item) => setState(() {

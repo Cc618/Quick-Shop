@@ -113,13 +113,19 @@ class _ListView extends State<ListPage> with WidgetsBindingObserver {
     => lineDialog(
       'New Category', 'Category Title', 'Please enter a title',
       context, ListPage.scaffoldContext, (input) => setState(()
-        => addCategory(ListCategoryModel(title: input, items: [], collapsed: false))
+        => addCategory(ListCategoryModel(
+          title: input,
+          items: [],
+          collapsed: false,
+        ))
       ));
 
   // Appends a category to the list
   // The onMenu function is initialised
   void addCategory(ListCategoryModel data) {
     data.onRemoval = onCategoryRemoveEntry;
+    // TODO
+    data.colorId = 'green';
     setState(() => widget.m.categories.add(ListCategory(data)));
   }
 

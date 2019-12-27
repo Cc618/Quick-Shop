@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'settings_data.dart';
+import 'props.dart';
 
 class ColorEntry {
   Color color;
@@ -100,4 +101,47 @@ class _ColorPickerView extends State<ColorPicker> {
       color: Settings.primaryColor
     );
   }
+}
+
+
+// Displays a dialog to choose a color
+Future<String> pickColor(BuildContext context, List<String> colors) async {
+  String color;
+
+  // Build the menu items
+  var entries = List<Widget>();
+
+  for (var col in colors)
+    entries.add(ColorItem(
+      size: 48,
+      padding: 12,
+      onTap: () {
+        color = col;
+        Navigator.of(context).pop();
+      },
+      color: deserializeColor(col)
+    ));
+
+  // Display dialog
+  await showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16)
+      ),
+      context: context,
+      builder: (BuildContext bc) {
+        return Container(
+          child: Column(
+            children: [
+              // Title
+              ListTile(
+                title: Text('Select Color'),
+              ),
+              // Colors
+              Wrap(children: entries),
+            ]
+          )
+        );
+      });
+  
+  return color;
 }
