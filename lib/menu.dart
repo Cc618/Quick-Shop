@@ -131,6 +131,7 @@ class _MenuView extends State<ListMenu> {
           await writeListFile(ListModel(title: title, categories: []));
           await updateLists();
           setState(() {});
+          loadList(title);
         }
       });
 
