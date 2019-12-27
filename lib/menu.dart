@@ -182,6 +182,9 @@ class _MenuView extends State<ListMenu> {
           builder: (context) =>
               SettingsPage()));
 
+    // Save
+    saveSettings(Settings.toJson());
+
     QuickShopState.reload();
   }
 }

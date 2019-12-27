@@ -3,6 +3,7 @@
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'list.dart';
+import 'settings_data.dart';
 
 // Whether initIO has been called
 bool ioInitialized = false;
@@ -11,9 +12,19 @@ Directory _appDir;
 Directory _listsDir;
 
 Future<void> initIO() async {
+  // Init folders
   _appDir = await getApplicationDocumentsDirectory();
   _listsDir = Directory(_appDir.path + '/lists');
   await _listsDir.create();
+
+  // Init settings
+  var settings = File(_appDir.path + '/settings');
+
+  if (await settings.exists())
+    Settings.load(await settings.readAsString());
+  else
+    saveSettings(Settings.toJson());
+
 
   ioInitialized = true;
 }
@@ -67,3 +78,10 @@ Future<bool> listExists(String title) async {
 // TODO : Verify / and other dangerous characters
 Future<void> renameListFile(String listName, String newName) async
   => await File(_listsDir.path + '/' + listName).rename(_listsDir.path + '/' + newName);
+
+Future<void> saveSettings(String jsonData) async {
+  try {
+    // Write to the file the data
+    File(_appDir.path + '/settings').writeAsString(jsonData);
+  } catch (e) {}
+}

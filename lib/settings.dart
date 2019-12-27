@@ -51,26 +51,26 @@ class _SettingsView extends State<SettingsPage> with WidgetsBindingObserver {
                 title: Text('App color'),
                 leading: ColorPicker(
                   onColorSelect: (col)
-                    => setState(() => Settings.primaryColor = col.color),
+                    => setState(() => Settings.primaryColorName = col.id),
                   colors: [
                     ColorEntry(
-                      id: 'Red',
+                      id: 'red',
                       color: Colors.red
                     ),
                     ColorEntry(
-                      id: 'Purple',
+                      id: 'purple',
                       color: Colors.purple
                     ),
                     ColorEntry(
-                      id: 'Blue',
+                      id: 'blue',
                       color: Colors.blue
                     ),
                     ColorEntry(
-                      id: 'Green',
+                      id: 'green',
                       color: Colors.green
                     ),
                     ColorEntry(
-                      id: 'Yellow',
+                      id: 'yellow',
                       color: Colors.yellow
                     ),
                   ],  
