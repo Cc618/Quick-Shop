@@ -176,11 +176,14 @@ class _MenuView extends State<ListMenu> {
     );
   
   Future<void> displaySettings() async {
-    await Navigator.push(
+    var result = await Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) =>
               SettingsPage()));
+
+    if (result == 'update_lists')
+      await updateLists();
 
     // Save
     saveSettings(Settings.toJson());

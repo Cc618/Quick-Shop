@@ -85,3 +85,11 @@ Future<void> saveSettings(String jsonData) async {
     File(_appDir.path + '/settings').writeAsString(jsonData);
   } catch (e) {}
 }
+
+// Removes all lists
+// !!! No confirm dialog + No app reload
+Future<void> deleteLists() async {
+  var lists = await _listsDir.list().toList();
+  for (var file in lists)
+    await file.delete();
+}

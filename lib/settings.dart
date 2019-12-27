@@ -3,7 +3,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:quick_shop/color_picker.dart';
+import 'package:quick_shop/main.dart';
 import 'settings_data.dart';
+import 'files.dart';
+import 'dialogs.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key key}) : super(key: key);
@@ -76,6 +79,21 @@ class _SettingsView extends State<SettingsPage> with WidgetsBindingObserver {
                   ],  
                 )
               )
+            ),
+            Card(
+              child: FlatButton(
+                onPressed: () async {
+                  if (await confirmDialog('Delete All Lists ?', context))
+                  {
+                    await deleteLists();
+                    Navigator.pop(context, 'update_lists');
+                  }
+                },
+                child: Text(
+                  'Delete Lists',
+                  style: TextStyle(color: Theme.of(context).errorColor),
+                ),
+              ),  
             )
           ],
         )
@@ -83,9 +101,6 @@ class _SettingsView extends State<SettingsPage> with WidgetsBindingObserver {
     );
   }
 
-  // TODO : Save data
   Future<void> save()
-  {
-
-  }
+    => saveSettings(Settings.toJson());
 }
