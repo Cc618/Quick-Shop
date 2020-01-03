@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:quick_shop/main.dart';
 import 'package:quick_shop/settings.dart';
 import 'package:quick_shop/settings_data.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'dialogs.dart';
 import 'files.dart';
 import 'list.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'props.dart';
 
 class ListMenu extends StatefulWidget {
   ListMenu({Key key}) : super(key: key);
@@ -125,13 +126,27 @@ class _MenuView extends State<ListMenu> {
   }
 
   void createList() => lineDialog('New List', 'List Title',
-          'Please enter a title', context, _scaffoldContext, (title) async {
-        if (!await listExists(title)) {
+        'Please enter a title', context, _scaffoldContext, (title) async {
+          if (!isListNameValid(title)) {
+            Scaffold.of(_scaffoldContext).showSnackBar(SnackBar(
+              content: Text('This title is not valid'),
+            ));
+            
+            return;
+          }
+        
+          if (await listExists(title)) {
+            Scaffold.of(_scaffoldContext).showSnackBar(SnackBar(
+              content: Text('This list exists already'),
+            ));
+
+            return;
+          }
+
           await writeListFile(ListModel(title: title, categories: []));
           await updateLists();
           setState(() {});
           loadList(title);
-        }
       });
 
   // When we long tap a list
@@ -149,7 +164,9 @@ class _MenuView extends State<ListMenu> {
     if (rename)
       await lineDialog('Rename', 'New title', 'Please select a new title',
           context, _scaffoldContext, (input) async {
-        await renameListFile(title, input);
+        await renameListFile(title, input, () => Scaffold.of(_scaffoldContext).showSnackBar(SnackBar(
+          content: Text('This name is invalid'),
+        )));
 
         updateLists();
       });

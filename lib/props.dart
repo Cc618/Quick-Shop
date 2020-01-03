@@ -23,3 +23,15 @@ MaterialColor deserializeColor(String id) {
       return Colors.purple;
   }
 }
+
+bool isListNameValid(String name) {
+  for (int i = 0; i < name.length; ++i) {
+    var c = name[i];
+    // Invalid chars
+    if (c == '!' || c == '\\' || c == '/')
+      return false;
+  }
+  
+  return true;
+}
+

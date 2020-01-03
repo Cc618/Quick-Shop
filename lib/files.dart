@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'list.dart';
 import 'settings_data.dart';
+import 'props.dart';
 
 // Whether initIO has been called
 bool ioInitialized = false;
@@ -47,24 +48,30 @@ Future<List<String>> listLists() async {
 
 // Write list file json data
 Future<void> writeListFile(ListModel list) async {
-  try {
-    // Write to the file the data
-    await File(_listsDir.path + '/' + list.title).writeAsString(list.toJson());
-  } catch (e) {}
+  if (isListNameValid(list.title)) {
+    try {
+      // Write to the file the data
+      await File(_listsDir.path + '/' + list.title).writeAsString(list.toJson());
+    } catch (e) {}
+  }
 }
 
 // Read list file json data
 Future<ListModel> readListFile(String listName) async {
-  try {
-    var file = File(_listsDir.path + '/' + listName);
+  if (isListNameValid(listName)) {
+    try {
+      var file = File(_listsDir.path + '/' + listName);
 
-    // Read raw data
-    String jsonData = await file.readAsString();
+      // Read raw data
+      String jsonData = await file.readAsString();
 
-    return ListModel.fromJson(listName, jsonData);
-  } catch (e) {
-    return null;
+      return ListModel.fromJson(listName, jsonData);
+    } catch (e) {
+      return null;
+    }
   }
+
+  return null;
 }
 
 Future<void> removeListFile(String listName) async
@@ -75,9 +82,13 @@ Future<bool> listExists(String title) async {
   return await File(_listsDir.path + '/' + title).exists();
 }
 
-// TODO : Verify / and other dangerous characters
-Future<void> renameListFile(String listName, String newName) async
-  => await File(_listsDir.path + '/' + listName).rename(_listsDir.path + '/' + newName);
+Future<void> renameListFile(String listName, String newName, void Function() onInvalidName) async
+{
+  if (isListNameValid(newName))
+    await File(_listsDir.path + '/' + listName).rename(_listsDir.path + '/' + newName);
+  else
+    onInvalidName();
+}
 
 Future<void> saveSettings(String jsonData) async {
   try {
