@@ -53,7 +53,14 @@ class _ItemView extends State<ListItem> {
             value: widget.m.checked,
           ),
           Expanded(
-            child: Text(widget.m.title)
+            child: TextField(
+              decoration: InputDecoration(
+                border: InputBorder.none
+              ),
+              cursorColor: widget.m.color,
+              controller: TextEditingController(text: widget.m.title),
+              onChanged: (title) => widget.m.title = title,
+            )
           )
         ]
       )
