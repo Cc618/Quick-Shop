@@ -27,9 +27,8 @@ dependencies:
   # File paths properties
   path_provider: ^1.5.1
 
-  # TODO : Implement url launching
   # To open urls
-  # url_launcher: ^5.4.1
+  url_launcher: ^5.4.1
 
 dev_dependencies:
   flutter_test:

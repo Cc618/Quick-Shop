@@ -7,8 +7,7 @@ import 'package:quick_shop/settings_data.dart';
 import 'dialogs.dart';
 import 'files.dart';
 import 'list.dart';
-// TODO : Implement url launching
-// import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ListMenu extends StatefulWidget {
   ListMenu({Key key}) : super(key: key);
@@ -157,9 +156,8 @@ class _MenuView extends State<ListMenu> {
   }
 
   Future<void> launchUrl(String url) async {
-    // TODO : Implement url launching
-    // if (await canLaunch(url))
-    //   await launch(url);
+    if (await canLaunch(url))
+      await launch(url);
   }
 
   void displayAbout()

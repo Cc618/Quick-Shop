@@ -124,8 +124,6 @@ class _ListView extends State<ListPage> with WidgetsBindingObserver {
   // The onMenu function is initialised
   void addCategory(ListCategoryModel data) {
     data.onRemoval = onCategoryRemoveEntry;
-    // TODO
-    data.colorId = 'green';
     setState(() => widget.m.categories.add(ListCategory(data)));
   }
 
