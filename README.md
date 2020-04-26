@@ -1,6 +1,8 @@
 # Quick Shop
 
-A tiny shopping list
+A tiny shopping list.
+
+Arrives soon on Google Play Store !
 
 ## Features
 
