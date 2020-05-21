@@ -2,7 +2,7 @@
 
 A tiny shopping list.
 
-Arrives soon on Google Play Store !
+Available on Google Play Store : https://play.google.com/store/apps/details?id=com.cc.quick_shop
 
 ## Features
 
